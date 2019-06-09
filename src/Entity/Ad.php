@@ -3,13 +3,19 @@
 namespace App\Entity;
 
 use Cocur\Slugify\Slugify;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\AdRepository")
  * @ORM\HasLifecycleCallbacks
+ * @UniqueEntity(
+ *  fields = {"title"},
+ *  message = "Une autre annonce possède déjà un titre similaire"
+ * )
  */
 class Ad
 {
@@ -22,6 +28,7 @@ class Ad
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\Length(min=10, max=255, minMessage="Le titre doit faire un minimum 10 charactères", maxMessage="Le titre doit faire au maximum 255 charactères")
      */
     private $title;
 
@@ -42,11 +49,13 @@ class Ad
 
     /**
      * @ORM\Column(type="text")
+     * @Assert\Length(min=75, minMessage="Le contenu doit faire un minimum 75 charactères")
      */
     private $content;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\Url()
      */
     private $coverImage;
 
