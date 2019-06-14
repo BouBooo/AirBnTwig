@@ -54,7 +54,7 @@ class Ad
     private $content;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      * @Assert\Url()
      */
     private $coverImage;
@@ -66,8 +66,15 @@ class Ad
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Image", mappedBy="ad", orphanRemoval=true)
+     * @Assert\Valid()
      */
     private $images;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="ads")
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $author;
 
     public function __construct()
     {
@@ -82,10 +89,9 @@ class Ad
      * @ORM\PreUpdate
      */
     public function initializeSlug() {
-        if(empty($this->slug)) {
-            $slugify = new Slugify();
-            $this->slug = $slugify->slugify($this->title);
-        }
+        $slugify = new Slugify();
+        $this->slug = $slugify->slugify($this->title);
+
     }
 
     public function getId(): ?int
@@ -204,6 +210,18 @@ class Ad
                 $image->setAd(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getAuthor(): ?User
+    {
+        return $this->author;
+    }
+
+    public function setAuthor(?User $author): self
+    {
+        $this->author = $author;
 
         return $this;
     }
