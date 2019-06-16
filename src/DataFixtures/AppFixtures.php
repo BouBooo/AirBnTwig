@@ -4,6 +4,7 @@ namespace App\DataFixtures;
 
 use App\Entity\Ad;
 use Faker\Factory;
+use App\Entity\Role;
 use App\Entity\User;
 use App\Entity\Image;
 use Cocur\Slugify\Slugify;
@@ -20,6 +21,22 @@ class AppFixtures extends Fixture
     public function load(ObjectManager $manager)
     {
         $faker = Factory::create('FR-fr');
+
+        $adminRole = new Role();
+        $adminRole->setTitle('ROLE_ADMIN');
+        $manager->persist($adminRole);
+
+        $adminUser = new User();
+        $adminUser ->setFirstname('Florent')
+                    ->setLastname('NICOLAS')
+                    ->setEmail('flonicolas.pro@outlook.fr') 
+                    ->setHash($this->encoder->encodePassword($adminUser, 'rootroot'))
+                    ->setPicture('https://pickaface.net/gallery/avatar/20121024_082235_4373_CV.png')
+                    ->setIntroduction($faker->sentence())
+                    ->setDescription('<p>' . join('</p><p>', $faker->paragraphs(5)) . '</p>')
+                    ->addUserRole($adminRole);
+        $manager->persist($adminUser);
+        
 
         $users = [];
         $genres = ['male', 'female'];
@@ -58,7 +75,7 @@ class AppFixtures extends Fixture
             $user = $users[mt_rand(0, count($users)-1)];
             
             $ad->setTitle($faker->sentence())
-                ->setCoverImage($faker->imageUrl(1000,350))
+                ->setCoverImage('https://place-hold.it/300x500')
                 ->setIntroduction($faker->paragraph(2))
                 ->setContent('<p>' . join('</p><p>', $faker->paragraphs(5)) . '</p>')
                 ->setPrice(mt_rand(40,200))

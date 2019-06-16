@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -67,6 +68,7 @@ class AccountController extends AbstractController
 
     /**
      * @Route("/account/profile", name="profile")
+     * @IsGranted("ROLE_USER")
      */
     public function profile(Request $request, ObjectManager $manager) {
         $user = $this->getUser();
@@ -89,6 +91,7 @@ class AccountController extends AbstractController
 
     /**
      * @Route("/account/edit-password", name="edit_password")
+     * @IsGranted("ROLE_USER")
      */
     public function editPassword(Request $request, UserPasswordEncoderInterface $encoder, ObjectManager $manager) {
         $passwordUpdate = new PasswordUpdate();
@@ -120,6 +123,7 @@ class AccountController extends AbstractController
 
     /**
      * @Route("/account", name="account")
+     * @IsGranted("ROLE_USER")
      */
     public function userAccount() {
         return $this->render('user/index.html.twig', [
