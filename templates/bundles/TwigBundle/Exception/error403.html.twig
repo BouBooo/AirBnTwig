@@ -1,0 +1,12 @@
+{# templates/bundles/TwigBundle/Exception/error403.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div class="container">
+    <h1>Oups ! Vous n'avez pas accès à cette ressource !</h1>
+    <p>Aucun soucis, vous pouvez retourner à l'accueil ou voir nos dernières annonces</p>
+
+    <a href="{{ path('home') }}" class="btn btn-primary">Retourner à l'accueil</a>
+    <a href="{{ path('ads_index') }}" class="btn btn-success">Nos annonces</a>
+</div>
+{% endblock %}
