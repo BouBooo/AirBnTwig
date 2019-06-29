@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping\PrePersist;
 use Doctrine\ORM\Mapping\HasLifecycleCallbacks;
 
@@ -33,11 +34,15 @@ class Booking
 
     /**
      * @ORM\Column(type="datetime")
+     * @Assert\Date(message="Format de date invalide")
+     * @Assert\GreaterThan("today", message="Date d'arrivée invalide")
      */
     private $startDate;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Assert\Date(message="Format de date invalide")
+     * @Assert\GreaterThan(propertyPath="startDate", message="Date de départ inférieure à la date d'arrivée")
      */
     private $endDate;
 
@@ -52,7 +57,7 @@ class Booking
     private $amount;
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text", nullable=true)
      */
     private $comment;
 
@@ -68,6 +73,37 @@ class Booking
             $this->amount = $this->ad->getPrice() * $this->getDuration();
         }
     }
+
+    public function isBookableDate() {
+            // Les dates qui sont impossibles pour l'annonce
+            $notAvailableDays = $this->ad->getNotAvailableDays();
+            // Compare les dates choisies avec les dates impossibles
+            $reservationDays = $this->getDays();
+            $formatDay = function ($day) {
+                return $day->format('Y-m-d');
+            };
+            // Tableau qui contient des string des journées
+            $days = array_map($formatDay, $reservationDays);
+            $notAvailable = array_map($formatDay, $notAvailableDays);
+            foreach ($days as $day)
+            {
+                if (array_search($day, $notAvailable) !== false) return false;
+            }
+            return true;
+    }
+
+	public function getDays()
+	{
+		$result = range(
+			$this->getStartDate()->getTimestamp(),
+			$this->getEndDate()->getTimestamp(),
+			24 * 60 * 60
+		);
+		$days = array_map(function ($dayTimestamp) {
+			return new \Datetime(date('Y-m-d', $dayTimestamp));
+		}, $result);
+		return $days;
+	}
 
     public function getDuration() {
         $diff = $this->endDate->diff($this->startDate);

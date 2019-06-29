@@ -89,7 +89,7 @@ class Ad
 
 
     /**
-     * Initialize slug if empty
+     * Initialize slug
      *
      * @ORM\PrePersist
      * @ORM\PreUpdate
@@ -98,6 +98,27 @@ class Ad
         $slugify = new Slugify();
         $this->slug = $slugify->slugify($this->title);
 
+    }
+
+    public function getNotAvailableDays() {
+        $notAvailableDays = [];
+
+        foreach($this->bookings as $booking) {
+            // Each days between two dates
+            $result = range(
+                $booking->getStartDate()->getTimestamp(),
+                $booking->getEndDate()->getTimestamp(),
+                24 *  60 * 60 
+            );
+
+            $days = array_map(function($dayTimestamp) {
+                return new \Datetime(date('Y-m-d', $dayTimestamp));
+            }, $result);
+
+            $notAvailableDays = array_merge($notAvailableDays, $days);
+        }
+
+        return $notAvailableDays;
     }
 
     public function getId(): ?int
