@@ -35,9 +35,9 @@
                     <dt class="col-md-4">Nombre de nuits</dt>
                     <dt class="col-md-8">{{ booking.duration }}</dt>
                     <dt class="col-md-4">Montant total</dt>
-                    <dt class="col-md-8">{{ booking.amount }} €</dt>
+                    <dt class="col-md-8">{{ booking.amount | number_format(2, ',', ' ') }} €</dt>
                     <dt class="col-md-4">Commentaire</dt>
-                    <dt class="col-md-8">{{ booking.comment }}</dt>
+                    <dt class="col-md-8">{{ booking.comment | default('Aucun commentaire') }}</dt>
                 </dl>
                 <hr>
                 <h2 class="alert-heading">Votre hôte</h2>
@@ -57,7 +57,27 @@
                 <a class="btn btn-primary" href="{{ path('show_user', { 'slug' : author.slug }) }}">
                     Plus d'infos sur {{ author.firstname }}
                 </a>
+            </div>
+            <div class="alert alert-light" id="comment">
+                    <h2 class="alert-heading">
+                        Votre avis compte
+                    </h2>
+                    {% if date() > date(booking.endDate) %}
+                        {% set comment =  booking.ad.commentFromAuthor(app.user) %}
 
+                        {% if comment is not null %}
+                            <blockquote>{{ comment.content }}</blockquote>
+                            <strong>Note : </strong> {% include 'includes/rating.html.twig' with {'rating': comment.rating} %}
+                        {% else %}
+                            {{ form_start(form) }}
+                            {{ form_widget(form) }}
+                            <button type="submit" class="btn btn-success">Confirmer</button>
+                            {{ form_end(form) }}
+                        {% endif %}
+
+                    {% else %}
+                        <p>Vous ne pouvez pas noter cette anonce tant que votre séjour n'est pas terminé !</p>
+                    {% endif %}
             </div>
         </div>
 
