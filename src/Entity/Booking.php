@@ -42,7 +42,7 @@ class Booking
     /**
      * @ORM\Column(type="datetime")
      * @Assert\Date(message="Format de date invalide")
-     * @Assert\GreaterThan(propertyPath="startDate", message="Date de départ inférieure à la date d'arrivée")
+     * @Assert\GreaterThan(propertyPath="startDate", message="Date de départ inférieure à la date d'arrivée", groups={"front"})
      */
     private $endDate;
 
@@ -63,6 +63,7 @@ class Booking
 
     /**
      * @ORM\PrePersist
+     * @ORM\PreUpdate
      */
     public function prePersist() {
         if(empty($this->createdAt)) {
