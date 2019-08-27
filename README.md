@@ -4,10 +4,10 @@
 ## Contexte : 
 Projet réalisé dans le cadre d'une formation en ligne sur le framework Symfony 4
 
-Environnement : Windows
-Base de données : MySQL
-Langages : PHP, SQL
-Framework : Symfony
+- Environnement : Windows
+- Base de données : MySQL
+- Langages : PHP, SQL
+- Framework : Symfony
 
 
 ## Objectifs : 
