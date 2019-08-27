@@ -14,6 +14,7 @@ Projet réalisé dans le cadre d'une formation en ligne sur le framework Symfony
  - Développement d'une application Symfony déployable
  - Initiation et perfectionnement à Doctrine
  - Utilisation de Services
+ - Initiation au DQL
 
 
 
@@ -21,3 +22,4 @@ Projet réalisé dans le cadre d'une formation en ligne sur le framework Symfony
  - Authentification
  - Gestion du compte
  - Gestion des réservations
+ - Dashboard Admin
